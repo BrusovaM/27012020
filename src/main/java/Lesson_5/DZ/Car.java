@@ -1,5 +1,8 @@
 package Lesson_5.DZ;
 
+
+import java.util.concurrent.BrokenBarrierException;
+
 public class Car implements Runnable {
     private static int CARS_COUNT;
     static {
@@ -13,6 +16,9 @@ public class Car implements Runnable {
     }
     public int getSpeed() {
         return speed;
+    }
+    public Race getRace() {
+        return race;
     }
     public Car(Race race, int speed) {
         this.race = race;
@@ -29,8 +35,32 @@ public class Car implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if(race.cb.getNumberWaiting()==race.cb.getParties()-1){
+            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
+        }
+        //race.cb.countDown();
+        try {
+            race.cb.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+        race.cb.reset();
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
         }
+        if(race.cb.getNumberWaiting()==race.cb.getParties()-1){
+            System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
+        }
+        try {
+            race.cb.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+
     }
 }
