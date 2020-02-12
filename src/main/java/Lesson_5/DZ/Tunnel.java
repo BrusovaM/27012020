@@ -15,14 +15,13 @@ public class Tunnel extends Stage {
         try {
             try {
                 System.out.println(c.getName() + " готовится к этапу(ждет): " + description);
-                r1.lock();
 
 
                 currentCars.incrementAndGet();
-                if(currentCars.intValue()<c.getRace().getCars_count()/2 && r1.isLocked()) {
-                    r1.unlock();
-
+                if(currentCars.intValue()==c.getRace().getCars_count()/2 && !(r1.isLocked())) {
+                    r1.lock();
                 }
+
                 System.out.println(c.getName() + " начал этап: " + description);
                 Thread.sleep(length / c.getSpeed() * 1000);
             } catch (InterruptedException e) {
@@ -30,7 +29,6 @@ public class Tunnel extends Stage {
             } finally {
                 currentCars.decrementAndGet();
                 if(currentCars.intValue()<c.getRace().getCars_count()/2 && r1.isLocked()) {
-
                     r1.unlock();
                 }
                 System.out.println(c.getName() + " закончил этап: " + description);
