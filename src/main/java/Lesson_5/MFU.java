@@ -38,6 +38,23 @@ public class MFU {
         }
     }
 
+    public void copy(String doc, int n) {
+        synchronized (scanLock) {
+            synchronized (printLock) {
+                System.out.println("Начало копирования");
+                for (int i = 0; i < 10; i++) {
+                    System.out.println(i);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Конец копирования");
+            }
+        }
+    }
+
     public static void main(String[] args) {
         final MFU mfu = new MFU();
 
@@ -45,6 +62,13 @@ public class MFU {
             @Override
             public void run() {
                 mfu.print("Doc 1", 10);
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mfu.copy("Doc 4", 5);
             }
         }).start();
 
